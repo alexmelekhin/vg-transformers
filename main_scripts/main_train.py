@@ -36,7 +36,7 @@ if args.deterministic:
     torch.backends.cudnn.deterministic = True
     torch.backends.cudnn.benchmark = False
 
-args.output_folder = join("logs", args.exp_name, str(args.seed))
+args.output_folder = join(args.output_folder, args.exp_name, str(args.seed))
 
 
 setup_logging(args.output_folder)

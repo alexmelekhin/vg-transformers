@@ -16,7 +16,7 @@ def parse_arguments():
     # reproducibility
     parser.add_argument('--seed', type=int, default=43)
     parser.add_argument('--deterministic', action='store_true', default=False)
-    
+
     # dataset
     parser.add_argument("--cached_train_dataset", type=str, help="Path of cached pickle train dataset")
     parser.add_argument("--city", type=str, default='', help='subset of cities from train set')
@@ -49,7 +49,7 @@ def parse_arguments():
                                                                        "none",  "_"])
     parser.add_argument("--aggregation", type=str, default="seqvlad",
                         choices=["cat", "fc", "seqvlad", "_"])
-    parser.add_argument("--freeze_layer", type=str, default="layer3",  
+    parser.add_argument("--freeze_layer", type=str, default="layer3",
                         choices=["layer1", "layer2", "layer3", "layer4"], help="_")
     parser.add_argument("--trunc_te", type=int, default=None, choices=list(range(0, 14)))
     parser.add_argument("--freeze_te", type=int, default=None, choices=list(range(-1, 14)))
@@ -85,18 +85,19 @@ def parse_arguments():
                         choices=["triplet", "sare_ind", "sare_joint"])
     parser.add_argument("--margin", type=float, default=0.1,
                         help="margin for the triplet loss")
-        
+
     # PATHS
     parser.add_argument("--dataset_path", type=str, default='', help="Path of the dataset")
     parser.add_argument("--exp_name", type=str, default="default",
                         help="Folder name of the current run (saved in ./runs/)")
+    parser.add_argument("--output_folder", type=str, default="./logs",
+                        help="Folder to save logs and checkpoints")
 
 
     args = parser.parse_args()
-        
+
     if args.queries_per_epoch % args.cached_queries != 0:
         raise ValueError("Please ensure that queries_per_epoch is divisible by cache_refresh_rate, " +
                          f"because {args.queries_per_epoch} is not divisible by {args.cached_queries}")
-    
-    return args
 
+    return args
