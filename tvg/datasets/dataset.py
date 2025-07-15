@@ -137,7 +137,7 @@ class BaseDataset(data.Dataset):
 
         self.qIdx = np.array(self.qIdx)
         self.pIdx = np.array(self.pIdx, dtype=object)
-        if split == 'train':
+        if ('msls' in self.dataset_folder) and (split == 'train'):  # only save cache for MSLS train set
             save_dict = {
                 'db_paths': self.db_paths,
                 'q_paths': self.q_paths,
