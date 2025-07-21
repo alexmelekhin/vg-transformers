@@ -48,7 +48,7 @@ def parse_arguments():
     parser.add_argument("--pooling", type=str, default="none", choices=["netvlad", "gem", "spoc", "mac", "rmac",
                                                                        "none",  "_"])
     parser.add_argument("--aggregation", type=str, default="seqvlad",
-                        choices=["cat", "fc", "seqvlad", "_"])
+                        choices=["cat", "fc", "seqvlad", "_", "seqboq"])
     parser.add_argument("--freeze_layer", type=str, default="layer3",
                         choices=["layer1", "layer2", "layer3", "layer4"], help="_")
     parser.add_argument("--trunc_te", type=int, default=None, choices=list(range(0, 14)))

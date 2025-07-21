@@ -14,14 +14,14 @@ from tvg.models.cct import cct_14_7x2_224, cct_14_7x2_384
 
 
 class TVGNet(nn.Module):
-    """Network for VG applied to sequences.The used networks are composed of 
+    """Network for VG applied to sequences.The used networks are composed of
     an encoder, a pooling layer and an aggregator."""
     def __init__(self, args):
         super().__init__()
         self.fusion = ''
         if args.arch in ['timesformer']:
             self.fusion = 'early'
-        elif args.aggregation in ['seqvlad', 'fc']:
+        elif args.aggregation in ['seqvlad', 'fc', 'seqboq']:
             self.fusion = 'intermediate'
         else:
             # it's cat
@@ -104,6 +104,10 @@ def get_aggregator(args):
         )
         args.features_dim = args.fc_out
         return fc
+
+    elif args.aggregation == 'seqboq':
+        args.features_dim *= 32  # BoQ output dimension is fixed
+        return pooling.BoQ(seq_length=args.seq_length)
 
 
 def get_pooling(args):
@@ -204,7 +208,7 @@ def get_encoder(args):
         elif args.arch.endswith("l4"):
             logging.debug(f"Train only layer3 and layer4 of the resnet{args.arch[1:3]}, freeze the previous ones")
             layers = list(encoder.children())[:-2]
-    
+
         encoder = torch.nn.Sequential(*layers)
         args.features_dim = get_output_channels_dim(encoder)  # Dinamically obtain number of channels in output
         return encoder
