@@ -359,12 +359,15 @@ class PCADataset(data.Dataset):
                  seq_len=3):
         super().__init__()
         self.seq_len = seq_len
+        self.dataset_folder = dataset_folder
 
         if not os.path.exists(dataset_folder):
             raise FileNotFoundError(f"Folder {dataset_folder} does not exist.")
         self.base_transform = base_transform
 
         if 'robotcar' in dataset_folder:
+            # this workaround is really required: in robotcar we have ~3k samples in the train database
+            # to fit the PCA with dimension 4096 we need to satisfy 'num_samples > 4096'
             folders = list(product(['train', 'val'], ['queries', 'database'])) + [('test', 'database')]
             self.db_paths = []
             for folder in folders:
@@ -372,8 +375,10 @@ class PCADataset(data.Dataset):
                 load_folder = join(dataset_folder, split, subset)
                 paths, _, _ = build_sequences(load_folder, seq_len=self.seq_len,
                                               cities=cities, desc="Loading database to compute PCA...")
+                paths = [",".join(join(split, p) for p in sequence.split(",")) for sequence in paths]
                 self.db_paths += paths
         else:
+            # note that in MSLS we use only one split for the database
             self.dataset_folder = join(dataset_folder, split)
             database_folder = join(self.dataset_folder, "database")
             self.db_paths, _, _ = build_sequences(database_folder, seq_len=self.seq_len,
