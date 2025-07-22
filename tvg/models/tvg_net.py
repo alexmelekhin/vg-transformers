@@ -107,6 +107,9 @@ def get_aggregator(args):
 
     elif args.aggregation == 'seqboq':
         args.features_dim *= 32  # BoQ output dimension is fixed
+        if args.arch == "r50l3":
+            args.features_dim = 1024 * 16
+            return pooling.BoQ(seq_length=args.seq_length, in_channels=1024, proj_channels=512, num_queries=64, row_dim=32)
         return pooling.BoQ(seq_length=args.seq_length)
 
 
