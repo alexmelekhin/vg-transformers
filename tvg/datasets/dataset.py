@@ -368,7 +368,9 @@ class PCADataset(data.Dataset):
         if 'robotcar' in dataset_folder:
             # this workaround is really required: in robotcar we have ~3k samples in the train database
             # to fit the PCA with dimension 4096 we need to satisfy 'num_samples > 4096'
-            folders = list(product(['train', 'val'], ['queries', 'database'])) + [('test', 'database')]
+            # NOTE: the original version used all data including 'test/database' set
+            # BUT we decided to use only train and val for more fair testing
+            folders = list(product(['train', 'val'], ['queries', 'database']))  # + [('test', 'database')]
             self.db_paths = []
             for folder in folders:
                 split, subset = folder[0], folder[1]
